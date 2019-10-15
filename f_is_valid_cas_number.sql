@@ -46,54 +46,55 @@ AS
 **/
 
 BEGIN
-  -- Last digit of the CAS Number is the check digit (checksum)
-  DECLARE @check_digit NUMERIC;
-  DECLARE @checksum_source_length NUMERIC;
-
-  -- Remove HYPHENs from CAS Number and compute checksum using all but the last digit
-  DECLARE @reversed_cas_number VARCHAR(50);
-  SET @reversed_cas_number = REVERSE(@p_cas_number); --'7-65-4321' -> '7654321'
-  SET @reversed_cas_number = REPLACE(@reversed_cas_number,'-',''); --'7-65-4321' -> '7654321'
-  SET @reversed_cas_number = SUBSTRING(@reversed_cas_number, 2, LEN(@reversed_cas_number) - 1); --'654321'
-
-  -- Computed checksum.
-  -- Check Digit should be equal to this checksum for the CAS number to be valid
-  SET @check_digit = CONVERT(NUMERIC, SUBSTRING(@p_cas_number, LEN(@p_cas_number), 1)); --'7'
-
-  -- Set to 1 if format of input CAS number is valid
-  DECLARE @is_format_valid NUMERIC(1) = 0;
-  SET @is_format_valid = ISNUMERIC(REPLACE(@p_cas_number,'-',''));
-
   -- Set to 1 if format as well as checksum of input CAS Number is valid
-  DECLARE @is_valid_cas NUMERIC = 0;
+  DECLARE @is_format_valid NUMERIC(1) = 0;
+  DECLARE @is_valid_cas NUMERIC(1) = 0;
 
-  -- If format is valid then compute checksum and validate the check digit against it
-  DECLARE @temp NUMERIC = 0;
-  DECLARE @checksum NUMERIC = 0;
-  DECLARE @checksum_source VARCHAR(50);
-  SET @checksum_source = @reversed_cas_number;
-  SET @checksum_source_length = LEN(@checksum_source);
-  IF (@is_format_valid = 1)
+  IF (@p_cas_number IS NOT NULL AND LEN(@p_cas_number) >= 6) --'1-23-4' <<--<< this is a smallest CAS number example.
   BEGIN
-    SET @checksum = 0;
-    DECLARE @i int = 0
-    WHILE @i < @checksum_source_length
+    -- Last digit of the CAS Number is the check digit (checksum)
+    DECLARE @check_digit NUMERIC;
+    DECLARE @checksum_source_length NUMERIC;
+    
+    -- Remove HYPHENs from CAS Number and compute checksum using all but the last digit
+    DECLARE @reversed_cas_number VARCHAR(50);
+    SET @reversed_cas_number = REVERSE(@p_cas_number); --'7-65-4321' -> '7654321'
+    SET @reversed_cas_number = REPLACE(@reversed_cas_number,'-',''); --'7-65-4321' -> '7654321'
+    SET @reversed_cas_number = SUBSTRING(@reversed_cas_number, 2, LEN(@reversed_cas_number) - 1); --'654321'
+    
+    -- Computed checksum.
+    -- Check Digit should be equal to this checksum for the CAS number to be valid
+    SET @check_digit = CONVERT(NUMERIC, SUBSTRING(@p_cas_number, LEN(@p_cas_number), 1)); --'7'
+    
+    -- Set to 1 if format of input CAS number is valid
+    SET @is_format_valid = ISNUMERIC(REPLACE(@p_cas_number,'-',''));
+    
+    -- If format is valid then compute checksum and validate the check digit against it
+    DECLARE @temp NUMERIC = 0;
+    DECLARE @checksum NUMERIC = 0;
+    DECLARE @checksum_source VARCHAR(50);
+    SET @checksum_source = @reversed_cas_number;
+    SET @checksum_source_length = LEN(@checksum_source);
+    IF (@is_format_valid = 1)
     BEGIN
-        SET @i = @i + 1;
-        SET @temp = CONVERT(NUMERIC, SUBSTRING(@checksum_source, @i, 1))  * @i;
-        SET @checksum = @checksum + @temp;
+      SET @checksum = 0;
+      DECLARE @i int = 0
+      WHILE @i < @checksum_source_length
+      BEGIN
+          SET @i = @i + 1
+          SET @temp = CONVERT(NUMERIC, SUBSTRING(@checksum_source, @i, 1))  * @i;
+          SET @checksum = @checksum + @temp;
+      END
+    END
+    
+    SET @temp = @checksum % 10;
+    SET @checksum = @temp;
+    
+    -- CAS Number is valid only if checksum matches with the check digit
+    IF (@checksum = @check_digit)
+    BEGIN
+        SET @is_valid_cas = 1;
     END
   END
- 
-  SET @temp = @checksum % 10;
-  SET @checksum = @temp;
-
-  -- CAS Number is valid only if checksum matches with the check digit
-  IF (@checksum = @check_digit)
-  BEGIN
-      SET @is_valid_cas = 1;
-  END
-
   RETURN @is_valid_cas;
 END
-GO
