@@ -1,5 +1,5 @@
 /****** Object:  StoredProcedure [dbo].[p_is_valid_cas_number]    Script Date: 15.10.2019 01:06:49 ******/
-CREATE PROCEDURE [dbo].[p_is_valid_cas_number](@p_cas_number AS VARCHAR(50)) --'1234-56-7'
+ALTER PROCEDURE [dbo].[p_is_valid_cas_number](@p_cas_number AS VARCHAR(50)) --'1234-56-7'
 AS
 
 /*
@@ -51,9 +51,9 @@ BEGIN
 
   -- Remove HYPHENs from CAS Number and compute checksum using all but the last digit
   DECLARE @reversed_cas_number VARCHAR(50);
-  SET @reversed_cas_number = (SELECT REVERSE(@p_cas_number)); --'7-65-4321' -> '7654321'
+  SET @reversed_cas_number = REVERSE(@p_cas_number); --'7-65-4321' -> '7654321'
   SET @reversed_cas_number = REPLACE(@reversed_cas_number,'-',''); --'7-65-4321' -> '7654321'
-  SET @reversed_cas_number = (SELECT SUBSTRING(@reversed_cas_number, 2, LEN(@reversed_cas_number) - 1)); --'654321'
+  SET @reversed_cas_number = SUBSTRING(@reversed_cas_number, 2, LEN(@reversed_cas_number) - 1); --'654321'
 
   -- Computed checksum.
   -- Check Digit should be equal to this checksum for the CAS number to be valid
@@ -85,7 +85,7 @@ BEGIN
   DECLARE @checksum NUMERIC = 0;
   DECLARE @checksum_source VARCHAR(50);
   SET @checksum_source = @reversed_cas_number;
-  SET @checksum_source_length = (SELECT LEN(@checksum_source));
+  SET @checksum_source_length = LEN(@checksum_source);
   IF (@is_format_valid = 1)
   BEGIN
     SET @checksum = 0;
