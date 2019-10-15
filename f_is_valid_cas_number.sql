@@ -79,7 +79,7 @@ BEGIN
     DECLARE @i int = 0
     WHILE @i < @checksum_source_length
     BEGIN
-        SET @i = @i + 1
+        SET @i = @i + 1;
         SET @temp = CONVERT(NUMERIC, SUBSTRING(@checksum_source, @i, 1))  * @i;
         SET @checksum = @checksum + @temp;
     END
