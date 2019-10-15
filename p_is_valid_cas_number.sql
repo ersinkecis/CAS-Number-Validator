@@ -1,5 +1,5 @@
 /****** Object:  StoredProcedure [dbo].[p_is_valid_cas_number]    Script Date: 15.10.2019 01:06:49 ******/
-ALTER PROCEDURE [dbo].[p_is_valid_cas_number](@p_cas_number AS VARCHAR(50)) --'1234-56-7'
+CREATE PROCEDURE [dbo].[p_is_valid_cas_number](@p_cas_number AS VARCHAR(50)) --'1234-56-7'
 AS
 
 /*
