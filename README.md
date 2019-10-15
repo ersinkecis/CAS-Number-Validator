@@ -1,6 +1,5 @@
 # CAS-Number-Validator-For-MSSQL
-Microsoft T-SQL procedure to validate CAS Registry Numbers by Ersin Kecis.
-Microsoft T-SQL function to validate CAS Registry Numbers by Ersin Kecis.
+Microsoft T-SQL procedure and function to validate CAS Registry Numbers by Ersin Kecis.
 
 ## What is a CAS Registry Number?
 CAS Registry Numbers are universally used to provide a unique, unmistakable identifier for chemical substances. CAS Number is a unique numerical identifier assigned by Chemical Abstracts Service (CAS) to every chemical substance described in the open scientific literature (currently including those described from at least 1957 through the present), including organic and inorganic compounds, minerals, isotopes, alloys and nonstructurable materials (UVCBs, of unknown, variable composition, or biological origin).
