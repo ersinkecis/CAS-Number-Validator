@@ -1,4 +1,4 @@
-# CAS-Number-Validator
+# CAS-Number-Validator-For-MSSQL
 Microsoft T-SQL procedure to validate CAS Registry Numbers by Ersin Kecis.
 
 ## What is a CAS Registry Number?
