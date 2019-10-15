@@ -19,11 +19,9 @@ AS
  * @author1        Abhinav Sood (Oracle - PL/SQL version)
  * @author1_url    http://www.abhinavsood.com/
  * @ora_link       http://www.abhinavsood.com/cas-number-validation/
-
-
-
-
-
+ *
+ ****************************************************************************************
+ *
  * @author2        Ersin Kecis (MSSQL Server - T/SQL version)
  * @author2_url    https://github.com/ersinkecis/
  * @sql_link       https://github.com/ersinkecis/CAS-Number-Validator
