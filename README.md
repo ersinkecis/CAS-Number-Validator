@@ -1,5 +1,5 @@
 # CAS-Number-Validator
-Oracle PL SQL function to validate CAS Registry Numbers
+Microsoft T-SQL procedure to validate CAS Registry Numbers
 
 ## What is a CAS Registry Number?
 CAS Registry Numbers are universally used to provide a unique, unmistakable identifier for chemical substances. CAS Number is a unique numerical identifier assigned by Chemical Abstracts Service (CAS) to every chemical substance described in the open scientific literature (currently including those described from at least 1957 through the present), including organic and inorganic compounds, minerals, isotopes, alloys and nonstructurable materials (UVCBs, of unknown, variable composition, or biological origin).
@@ -11,19 +11,19 @@ The function `f_is_valid_cas_number` takes a CAS Number as the only input parame
 
 ```sql
 -- Valid CAS Number for Water, returns 1
-SELECT f_is_valid_cas_number('7732-18-5') FROM dual;
+EXEC p_is_valid_cas_number '7732-18-5';
 
 -- Invalid syntax, returns 0
-SELECT f_is_valid_cas_number('7A2-181-522') FROM dual;
+EXEC p_is_valid_cas_number '7A2-181-522';
 
 -- Valid syntax but incorrect checksum, returns 0
-SELECT f_is_valid_cas_number('1-11-5') FROM dual;
+EXEC p_is_valid_cas_number '1-11-5';
 ```
 
-In Oracle PL SQL, the function can be used to set a flag as follows:
+In MS T-SQL, the procedure can be used to set a flag as follows:
 ```sql
   -- Valid CAS Number for Water, sets is_valid_cas_number flag to 1
-  is_valid_cas_number NUMBER(1) := f_is_valid_cas_number('7732-18-5');
+  EXEC p_is_valid_cas_number '7732-18-5';
 ```
 
 
