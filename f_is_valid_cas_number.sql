@@ -7,7 +7,7 @@ CREATE PROCEDURE [dbo].[p_is_valid_cas_number](@p_cas_number AS VARCHAR(50)) --'
 AS
 
 /*
- * Function to validate a CAS Registry Number / CAS Number / CASRN
+ * Procedure to validate a CAS Registry Number / CAS Number / CASRN
  * 
  * CAS Number is a unique numerical identifier assigned by Chemical Abstracts
  * Service (CAS) to every chemical substance described in the open scientific
