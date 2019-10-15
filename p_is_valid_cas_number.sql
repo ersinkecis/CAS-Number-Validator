@@ -61,21 +61,7 @@ BEGIN
 
   -- Set to 1 if format of input CAS number is valid
   DECLARE @is_format_valid NUMERIC(1) = 0;
-  DECLARE @nval1 NUMERIC;
-  DECLARE @nval2 NUMERIC;
-  DECLARE @nval3 NUMERIC;
-  BEGIN TRY
-      --DECLARE @val1 VARCHAR(50) = (SELECT value FROM (SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS rownum, value FROM STRING_SPLIT(@p_cas_number, '-')) t WHERE t.rownum=1); --'1234'
-      --DECLARE @val2 VARCHAR(50) = (SELECT value FROM (SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS rownum, value FROM STRING_SPLIT(@p_cas_number, '-')) t WHERE t.rownum=2); --'56'
-      --DECLARE @val3 VARCHAR(50) = (SELECT value FROM (SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS rownum, value FROM STRING_SPLIT(@p_cas_number, '-')) t WHERE t.rownum=3); --'7'
-      SET @nval1 = (SELECT CONVERT(NUMERIC, value) AS nval1 FROM (SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS rownum, value FROM STRING_SPLIT(@p_cas_number, '-')) t WHERE t.rownum=1); --1234
-      SET @nval2 = (SELECT CONVERT(NUMERIC, value) AS nval2 FROM (SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS rownum, value FROM STRING_SPLIT(@p_cas_number, '-')) t WHERE t.rownum=2); --56
-      SET @nval3 = (SELECT CONVERT(NUMERIC, value) AS nval3 FROM (SELECT ROW_NUMBER() OVER(ORDER BY (SELECT NULL)) AS rownum, value FROM STRING_SPLIT(@p_cas_number, '-')) t WHERE t.rownum=3); --7
-      SET @is_format_valid = 1;
-  END TRY
-  BEGIN CATCH
-      SET @is_format_valid = 0;
-  END CATCH
+  SET @is_format_valid = ISNUMERIC(REPLACE(@p_cas_number,'-',''));
 
   -- Set to 1 if format as well as checksum of input CAS Number is valid
   DECLARE @is_valid_cas NUMERIC = 0;
