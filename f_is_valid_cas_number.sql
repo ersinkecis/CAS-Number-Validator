@@ -1,5 +1,3 @@
-USE [Spectrums]
-GO
 /****** Object:  StoredProcedure [dbo].[p_is_valid_cas_number]    Script Date: 15.10.2019 01:06:49 ******/
 SET ANSI_NULLS ON
 GO
