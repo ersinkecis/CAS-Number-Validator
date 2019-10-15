@@ -49,11 +49,12 @@ BEGIN
   DECLARE @is_format_valid NUMERIC(1) = 0;
   DECLARE @is_valid_cas NUMERIC(1) = 0;
 
-  IF (@p_cas_number IS NOT NULL AND LEN(@p_cas_number) >= 6) --'1-23-4' <<--<< this is a smallest CAS number example.
+  IF (@p_cas_number IS NOT NULL AND LEN(@p_cas_number) >= 6) --'1-23-4' <<--<< this is a smallest CAS number example. (max length=12 -> 1234567-89-0)
   BEGIN
     -- Last digit of the CAS Number is the check digit (checksum)
     DECLARE @check_digit NUMERIC;
     DECLARE @checksum_source_length NUMERIC;
+    DECLARE @input_param_length NUMERIC;
     
     -- Remove HYPHENs from CAS Number and compute checksum using all but the last digit
     DECLARE @reversed_cas_number VARCHAR(50);
@@ -62,9 +63,23 @@ BEGIN
     SET @reversed_cas_number = SUBSTRING(@reversed_cas_number, 2, LEN(@reversed_cas_number) - 1); --'654321'
     
     -- Set to 1 if format of input CAS number is valid
-    SET @is_format_valid = ISNUMERIC(REPLACE(@p_cas_number,'-',''));
-	  IF (@is_format_valid = 1)
-	  BEGIN
+    --SET @is_format_valid = ISNUMERIC(REPLACE(@p_cas_number,'-',''));
+    SET @is_format_valid = 1;
+    SET @input_param_length = LEN(@p_cas_number);
+    DECLARE @onechar VARCHAR(1);
+    DECLARE @i int = 0
+    WHILE @i < @input_param_length
+    BEGIN
+        SET @i = @i + 1
+        SET @onechar = SUBSTRING(@p_cas_number, @i, 1);
+        IF (CHARINDEX(@onechar, '1234567890-') = 0)
+        BEGIN
+          SET @is_format_valid = 0;
+        END
+    END
+
+    IF (@is_format_valid = 1)
+    BEGIN
       -- Computed checksum.
       -- Check Digit should be equal to this checksum for the CAS number to be valid
       SET @check_digit = CONVERT(NUMERIC, SUBSTRING(@p_cas_number, LEN(@p_cas_number), 1)); --'7'
@@ -75,16 +90,13 @@ BEGIN
       DECLARE @checksum_source VARCHAR(50);
       SET @checksum_source = @reversed_cas_number;
       SET @checksum_source_length = LEN(@checksum_source);
-      IF (@is_format_valid = 1)
+      SET @checksum = 0;
+      SET @i = 0;
+      WHILE @i < @checksum_source_length
       BEGIN
-        SET @checksum = 0;
-        DECLARE @i int = 0
-        WHILE @i < @checksum_source_length
-        BEGIN
-            SET @i = @i + 1
-            SET @temp = CONVERT(NUMERIC, SUBSTRING(@checksum_source, @i, 1))  * @i;
-            SET @checksum = @checksum + @temp;
-        END
+          SET @i = @i + 1
+          SET @temp = CONVERT(NUMERIC, SUBSTRING(@checksum_source, @i, 1))  * @i;
+          SET @checksum = @checksum + @temp;
       END
       
       SET @temp = @checksum % 10;
@@ -95,8 +107,8 @@ BEGIN
       BEGIN
           SET @is_valid_cas = 1;
       END
-    END
-  END
+    END --IF (@is_format_valid = 1)
+  END --IF (@p_cas_number IS NOT NULL AND LEN(@p_cas_number) >= 6)
 
   SELECT @is_valid_cas;
-END
+END --PROCEDURE
